@@ -1,0 +1,44 @@
+// script.js
+document.addEventListener('DOMContentLoaded', function() {
+    loadRecords();
+    
+    document.getElementById('attendanceForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const studentName = document.getElementById('studentName').value.trim();
+        const date = document.getElementById('date').value;
+        const status = document.getElementById('status').value;
+        
+        if (studentName && date && status) {
+            addRecord(studentName, date, status);
+            document.getElementById('attendanceForm').reset();
+        }
+    });
+});
+
+function addRecord(studentName, date, status) {
+    const tableBody = document.getElementById('attendanceTable').getElementsByTagName('tbody')[0];
+    const newRow = tableBody.insertRow();
+    const cell1 = newRow.insertCell(0);
+    const cell2 = newRow.insertCell(1);
+    const cell3 = newRow.insertCell(2);
+    
+    cell1.textContent = studentName;
+    cell2.textContent = date;
+    cell3.textContent = status;
+    
+    saveRecord(studentName, date, status);
+}
+
+function saveRecord(studentName, date, status) {
+    let records = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
+    records.push({ studentName, date, status });
+    localStorage.setItem('attendanceRecords', JSON.stringify(records));
+}
+
+function loadRecords() {
+    let records = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
+    records.forEach(record => {
+        addRecord(record.studentName, record.date, record.status);
+    });
+}
